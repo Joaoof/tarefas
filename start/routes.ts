@@ -19,10 +19,12 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-import TarefasController from 'App/Controllers/Http/TarefasController'
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
 
 Route.post('/tarefas', 'TarefasController.store')
+Route.get('/listar', 'TarefasController.index')
+Route.get('/listar/:id', 'TarefasController.show')
+Route.put('/listar/:id', 'TarefasController.update')

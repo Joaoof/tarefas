@@ -24,7 +24,7 @@ export default class TarefaValidator {
    *    ```
    */
   public schema = schema.create({
-    id: schema.number(),
+    id: schema.number.optional(),
     tarefas: schema.string({}, [rules.required()]),
     description: schema.string({}, [rules.required()])
   })

@@ -6,7 +6,7 @@ export default class Tarefa extends BaseModel {
   public id: number
 
   @column()
-  public tarefa: string
+  public tarefas: string
 
   @column()
   public description: string
