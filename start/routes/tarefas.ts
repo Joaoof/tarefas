@@ -20,11 +20,8 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async () => {
-  return { hello: 'world' }
-})
-
-Route.post('/tarefas', 'TarefasController.store')
-Route.get('/listar', 'TarefasController.index')
-Route.get('/listar/:id', 'TarefasController.show')
-Route.put('/listar/:id', 'TarefasController.update')
+Route.post('/tarefas', 'Tarefas/Tarefas.store')
+Route.get('/listar', 'Tarefas/Tarefas.index')
+Route.get('/listar/:id', 'Tarefas/Tarefas.show')
+Route.put('/listar/:id', 'Tarefas/Tarefas.update')
+Route.delete('/listar/:id', 'Tarefas/Tarefas.destroy')
