@@ -14,6 +14,7 @@ export default class TarefasController {
 
     public async index({ response }: HttpContextContract) {
         const tarefas = await Tarefa.all()
+        
         return response.ok(tarefas)
     }
 
