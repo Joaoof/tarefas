@@ -1,6 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Tarefa from 'App/Models/Tarefa'
-import TarefaValidator from 'App/Validators/TarefaValidator'
+import TarefaValidator from 'App/Validators/Tarefas/TarefaValidator'
 
 
 export default class TarefasController {
