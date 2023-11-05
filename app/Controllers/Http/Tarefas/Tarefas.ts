@@ -3,7 +3,6 @@ import User from 'App/Models/User'
 import Tarefa from 'App/Models/Tarefa'
 import TarefaValidator from 'App/Validators/Tarefas/TarefaValidator'
 
-
 export default class TarefasController {
     public async store({ request, response, auth }: HttpContextContract) {
         const { user } = auth
@@ -16,11 +15,17 @@ export default class TarefasController {
     }
 
     public async index({ response }: HttpContextContract) {
-        const user = await User.find(1)
-    await user?.load('tarefas')
+        const user = await User.query().preload('tarefas').where('id', 1).firstOrFail()
+      
+        const tarefas = user.tarefas.map(({id, tarefas, description }) => ({
+            user: user.email,
+            id,
+            tarefas,
+            description
+          }))
 
 
-    return response.ok(user?.tarefas)
+        return response.ok(tarefas)
     }
 
     public async show({ params }: HttpContextContract) {
