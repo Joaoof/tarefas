@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Database from '@ioc:Adonis/Lucid/Database'
 import User from 'App/Models/User'
 import LoginValidator from 'App/Validators/Auth/LoginValidator'
 
@@ -26,6 +25,6 @@ export default class RegisterController {
   public async index({ response }: HttpContextContract) {
     console.log('passoui')
     const users = await User.all()
-    return response.ok(users)   
+    return response.ok(users)
   }
 }

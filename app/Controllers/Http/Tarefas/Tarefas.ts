@@ -14,7 +14,6 @@ export default class TarefasController {
 
     public async index({ response }: HttpContextContract) {
         const tarefas = await Tarefa.all()
-        
         return response.ok(tarefas)
     }
 
@@ -25,7 +24,7 @@ export default class TarefasController {
 
     }
 
-    public async update({ params, request, response }: HttpContextContract) {
+    public async update({ params, request, response }: HttpContextContract) {2
         const tarefas = await Tarefa.find(params.id)
 
         if (!tarefas) {
@@ -43,10 +42,10 @@ export default class TarefasController {
         const tarefas = await Tarefa.find(params.id)
 
         if (!tarefas) {
-            return response.conflict({ error: 'Tarefa já excluída!'})
+            return response.conflict({ error: 'Tarefa já excluída!' })
         } else {
             await tarefas?.delete()
-            return response.ok({ error: 'Tarefa deletada com sucesso'})
+            return response.ok({ error: 'Tarefa deletada com sucesso' })
         }
 
 
