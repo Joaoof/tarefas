@@ -13,7 +13,10 @@ export default class Tarefa extends BaseModel {
   public description: string
 
   @column()
-  public userId: number 
+  public userId: number
+  
+  @column()
+  public completed: boolean
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -17,11 +17,12 @@ export default class TarefasController {
     public async index({ response }: HttpContextContract) {
         const user = await User.query().preload('tarefas').where('id', 1).firstOrFail()
       
-        const tarefas = user.tarefas.map(({id, tarefas, description }) => ({
+        const tarefas = user.tarefas.map(({id, tarefas, description, completed }) => ({
             user: user.email,
             id,
             tarefas,
-            description
+            description,
+            completed: !!completed
           }))
 
 
@@ -36,17 +37,24 @@ export default class TarefasController {
     }
 
     public async update({ params, request, response }: HttpContextContract) {
-        const tarefas = await Tarefa.find(params.id)
+        const tarefa = await Tarefa.findOrFail(params.id)
 
-        if (!tarefas) {
+        if (!tarefa) {
             return response.notFound({ error: 'Tarefa não encontrada' })
         }
 
-        const data = request.only(['tarefas', 'description'])
+        const { tarefas, description, completed } = request.only(['tarefas', 'description', 'completed'])
 
-        await tarefas.merge(data).save()
+        tarefa.merge({ tarefas, description, completed })
+        await tarefa.save()
 
-        return response.ok(tarefas)
+        const responseData = {
+            tarefas,
+            description,
+            completed
+          }
+
+        return response.ok(responseData)
     }
 
     public async destroy({ response, params }: HttpContextContract) {
@@ -60,5 +68,11 @@ export default class TarefasController {
         }
 
 
+    }
+
+    public async get({ response }: HttpContextContract) {
+        const tarefas = await Tarefa.query().select('id', 'tarefas', 'description', 'completed').where('completed', true).fetch()
+
+        return response.ok(tarefas)
     }
 }
