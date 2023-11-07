@@ -6,24 +6,24 @@ import TarefaValidator from 'App/Validators/Tarefas/TarefaValidator'
 export default class TarefasController {
     public async store({ request, response, auth }: HttpContextContract) {
         const { user } = auth
-        if(!user) return response.status(401).send('Usuário não autenticado')
+        if (!user) return response.status(401).send('Usuário não autenticado')
         const body = await request.validate(TarefaValidator)
 
-        const tarefa = await Tarefa.create({...body, userId: user.id})
+        const tarefa = await Tarefa.create({ ...body, userId: user.id })
 
         return response.created(tarefa)
     }
 
     public async index({ response }: HttpContextContract) {
         const user = await User.query().preload('tarefas').where('id', 1).firstOrFail()
-      
-        const tarefas = user.tarefas.map(({id, tarefas, description, completed }) => ({
+
+        const tarefas = user.tarefas.map(({ id, tarefas, description, completed }) => ({
             user: user.email,
             id,
             tarefas,
             description,
             completed: !!completed
-          }))
+        }))
 
 
         return response.ok(tarefas)
@@ -52,7 +52,7 @@ export default class TarefasController {
             tarefas,
             description,
             completed
-          }
+        }
 
         return response.ok(responseData)
     }
@@ -70,9 +70,38 @@ export default class TarefasController {
 
     }
 
-    public async get({ response }: HttpContextContract) {
-        const tarefas = await Tarefa.query().select('id', 'tarefas', 'description', 'completed').where('completed', true).fetch()
+    public async getTrue({ response }: HttpContextContract) {
+        const user = await Tarefa.query().select('tarefas', 'completed').where('completed', true).exec()
 
-        return response.ok(tarefas)
+        const tarefas = user.map(({ tarefas, completed }) => {
+            if (this.checkCompleted(completed)) {
+                return tarefas
+            }
+        })
+
+        return response.status(200).json({ tarefas: tarefas.map(item => item).toString() })
+    }
+
+    public async getFalse({ response }: HttpContextContract) {
+        const user = await Tarefa.query().select('tarefas', 'completed').where('completed', false).exec()
+
+        const tarefas = user.map(({ tarefas, completed }) => ({
+            tarefas,
+            completed: !!completed
+        }))[0]
+
+        if (tarefas.completed === false) {
+            return response.json({ message: `Tarefas não realizadas, ${tarefas.tarefas}` })
+        }
+
+    }
+
+    private checkCompleted(completed: boolean) {
+        if ((completed === 1 as any)) {
+            return true
+        } else {
+            return false
+        }
+
     }
 }

@@ -22,7 +22,8 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.post('/tarefas', 'Tarefas/Tarefas.store').middleware('auth')
 Route.get('/listar', 'Tarefas/Tarefas.index')
-Route.get('/listar/tarefas', 'Tarefas/Tarefas.get')
+Route.get('/listar/tarefas/true', 'Tarefas/Tarefas.getTrue')
+Route.get('/listar/tarefas/false', 'Tarefas/Tarefas.getFalse')
 Route.get('/listar/:id', 'Tarefas/Tarefas.show')
 Route.put('/listar/:id', 'Tarefas/Tarefas.update').middleware('auth')
 Route.delete('/listar/:id', 'Tarefas/Tarefas.destroy').middleware('auth')
