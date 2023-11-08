@@ -2,6 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import Tarefa from 'App/Models/Tarefa'
 import TarefaValidator from 'App/Validators/Tarefas/TarefaValidator'
+import TarefaCompletedValidator from 'App/Validators/Tarefas/TarefaCompletedValidator'
 
 export default class TarefasController {
     public async store({ request, response, auth }: HttpContextContract) {
@@ -37,24 +38,25 @@ export default class TarefasController {
     }
 
     public async update({ params, request, response }: HttpContextContract) {
-        const tarefa = await Tarefa.findOrFail(params.id)
-
-        if (!tarefa) {
-            return response.notFound({ error: 'Tarefa não encontrada' })
-        }
-
-        const { tarefas, description, completed } = request.only(['tarefas', 'description', 'completed'])
-
-        tarefa.merge({ tarefas, description, completed })
-        await tarefa.save()
-
-        const responseData = {
-            tarefas,
-            description,
-            completed
-        }
-
-        return response.ok(responseData)
+            const validatedData = await request.validate(TarefaCompletedValidator)
+          
+            const tarefa = await Tarefa.find(params.id)
+          
+            if (!tarefa) {
+              return response.notFound({ error: 'Tarefa não encontrada' })
+            }
+          
+            tarefa.merge(validatedData)
+            await tarefa.save()
+          
+            const responseData = {
+              tarefas: tarefa.tarefas,
+              description: tarefa.description,
+              completed: tarefa.completed
+            }
+          
+            return response.ok(responseData)
+          
     }
 
     public async destroy({ response, params }: HttpContextContract) {
@@ -79,19 +81,19 @@ export default class TarefasController {
             }
         })
 
-        return response.status(200).json({ tarefas_true: tarefas.map(item => item).toString()})
+        return response.status(200).json({ tarefas_true: tarefas.map(item => item).toString() })
     }
 
     public async getFalse({ response }: HttpContextContract) {
         const user = await Tarefa.query().select('tarefas', 'completed').where('completed', false).exec()
 
-        const tarefas = user.map(({ tarefas, completed}) => {
+        const tarefas = user.map(({ tarefas, completed }) => {
             if (!completed) {
                 return tarefas
             }
         })
 
-        return response.status(200).json({ tarefas_false: tarefas.map(item => item).toString()})
+        return response.status(200).json({ tarefas_false: tarefas.map(item => item).toString() })
 
     }
 }

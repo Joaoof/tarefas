@@ -1,7 +1,7 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class TarefaValidator {
+export default class TarefaCompletedValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -27,6 +27,7 @@ export default class TarefaValidator {
     id: schema.number.optional(),
     tarefas: schema.string({}, [rules.required()]),
     description: schema.string({}, [rules.required()]),
+    completed: schema.boolean([rules.required()])
   })
 
   /**
